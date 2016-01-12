@@ -3,21 +3,16 @@ require 'csv'
 # Represents a person in an address book.
 class Contact
 
-  attr_reader :name, :email, :csv_file, :contacts
-
-  def initialize(name, email)
-    # TODO: Assign parameter values to instance variables.
-  end
+  @@csv_file = 'contacts.csv'
+  @@contact_info = CSV.read(@@csv_file)
 
   # Provides functionality for managing a list of Contacts in a database.
   class << self
 
     # Returns an Array of Contacts loaded from the database.
-    def all
-      # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
-      @csv_file = 'contacts.csv'
-      contact_info = CSV.read(@csv_file)
-      @contacts = contactify(contact_info)
+    def contacts
+      @@contacts ||= contactify(@@contact_info)
+      @@contacts
     end
     ContactInfo = Struct.new(:name, :email)
     def contactify(contact_info)
@@ -28,13 +23,13 @@ class Contact
 
 
     # Creates a new contact, adding it to the database, returning the new contact.
-    def create(name, email)
+    def create(full_name, email)
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
       self.contacts << ContactInfo.new(full_name, email)
-      CSV.open(csv_file, 'w') do |csv| 
-      contacts.each { |customer| csv << [customer[:name], customer[:email]] }
-    end
-    puts "Successfully added contact."
+      CSV.open(@@csv_file, 'w') do |csv| 
+        self.contacts.each { |contact| csv << [contact[:name], contact[:email]] }
+      end
+      puts "Successfully added contact."
     end
 
     # Returns the contact with the specified id. If no contact has the id, returns nil.
