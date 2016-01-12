@@ -7,17 +7,10 @@ class ContactList
 
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
   def initialize
-    @csv_file = 'contact_list.csv'
-    contact_info = CSV.read('contact_list.csv')
-    @contacts = contactify(contact_info)
+
   end
 
-  ContactInfo = Struct.new(:name, :email)
-  def contactify(contact_info)
-    contact_info.collect do |row|
-      ContactInfo.new(row[0], row[1])
-    end
-  end
+
 
   def menu
     if ARGV == []
@@ -34,8 +27,15 @@ class ContactList
     puts
     case command[0]
     when 'new'
-      new_contact
+      puts "\nFull name:"
+      full_name = gets.chomp
+      puts
+      puts "Email:"
+      email = gets.chomp
+      puts
+      Contact.create(full_name, email)
     when 'list'
+      contacts = Contact.all
       contacts.each_with_index { |contact,i| puts "#{i+1}: #{contact[:name]} (#{contact[:email]})" }
       puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
@@ -63,19 +63,6 @@ class ContactList
   end
 
   def new_contact
-    puts "\nFull name:"
-    full_name = gets.chomp
-    puts
-    puts "Email:"
-    email = gets.chomp
-    puts
-    self.contacts << ContactInfo.new(full_name, email)
-    CSV.open(csv_file, 'w') do |csv| 
-      contacts.each do |customer|
-        csv << [customer[:name], customer[:email]]
-      end
-    end
-    puts "Successfully added contact."
   end
 end
 
