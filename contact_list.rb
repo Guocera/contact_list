@@ -24,24 +24,36 @@ class ContactList
       puts "Here is a list of available commands:", \
               "\tnew\t- Create a new contact", \
               "\tlist\t- List all contacts", \
-              "\tshow\t- Show a contact", \
+              "\tshow ##\t- Show contact ##", \
               "\tsearch\t- Search contacts"
     end
   end
 
   def select_command
-    case gets.chomp
+    command = gets.chomp.split(' ')
+    case command[0]
     when 'new'
       new_contact
     when 'list'
       list_of_contacts
     when 'show'
-
+      show_contacts(command[1].to_i)
     when 'search'
 
     else
+      pp command
       puts 'Please enter new, list, show, or search'
     end
+  end
+
+  def show_contacts(id)
+    if id > contacts.size
+      puts "Contact not found." 
+      return
+    end
+    puts
+    puts contacts[id-1][:name], contacts[id-1][:email]
+    puts
   end
 
   def new_contact
