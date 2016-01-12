@@ -31,19 +31,25 @@ class ContactList
 
   def select_command
     command = gets.chomp.split(' ')
+    puts
     case command[0]
     when 'new'
       new_contact
     when 'list'
-      list_of_contacts
+      contacts.each_with_index { |contact,i| puts "#{i+1}: #{contact[:name]} (#{contact[:email]})" }
+      puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
       show_contacts(command[1].to_i)
     when 'search'
-
+      puts search_contacts(command[1])
     else
       pp command
       puts 'Please enter new, list, show, or search'
     end
+  end
+
+  def search_contacts(search)
+    contacts.select { |contact| ( (contact[:name].match(/#{search}/)) || (contact[:email].match(/#{search}/)) )}
   end
 
   def show_contacts(id)
@@ -71,15 +77,6 @@ class ContactList
     end
     puts "Successfully added contact."
   end
-
-  def list_of_contacts
-    puts
-    contacts.each_with_index do |contact,i|
-      puts "#{i+1}: #{contact[:name]} (#{contact[:email]})"
-    end
-    puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
-  end
-
 end
 
 #binding.pry
