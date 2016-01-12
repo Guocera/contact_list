@@ -25,9 +25,9 @@ class Contact
     # Creates a new contact, adding it to the database, returning the new contact.
     def create(full_name, email)
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
-      self.contacts << ContactInfo.new(full_name, email)
+      contacts << ContactInfo.new(full_name, email)
       CSV.open(@@csv_file, 'w') do |csv| 
-        self.contacts.each { |contact| csv << [contact[:name], contact[:email]] }
+        contacts.each { |contact| csv << [contact[:name], contact[:email]] }
       end
       puts "Successfully added contact."
     end
@@ -38,12 +38,17 @@ class Contact
       if id > contacts.size
         return "Contact not found." 
       end
-      return @@contacts[id-1][:name], @@contacts[id-1][:email]
+      return contacts[id-1][:name], @@contacts[id-1][:email]
     end
 
     # Returns an array of contacts who match the given term.
     def search(term)
       # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
+      matched_list = []
+      contacts.each_with_index do |contact,i|
+        matched_list << [contact, i] if ( (contact[:name].match(/#{term}/)) || (contact[:email].match(/#{term}/)) )
+      end
+      matched_list
     end
 
   end

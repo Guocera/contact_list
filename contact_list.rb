@@ -19,12 +19,14 @@ class ContactList
               "\tlist\t- List all contacts", \
               "\tshow ##\t- Show contact ##", \
               "\tsearch\t- Search contacts"
+      command = gets.chomp.split(' ')
+    else
+      command = ARGV
     end
+    select_command(command)
   end
 
-  def select_command
-    command = gets.chomp.split(' ')
-    puts
+  def select_command(command)
     case command[0]
     when 'new'
       puts "\nFull name:"
@@ -43,22 +45,24 @@ class ContactList
       puts Contact.find(command[1].to_i)
       puts
     when 'search'
-      puts search_contacts(command[1])
+      matched_list = Contact.search(command[1]).each do |cell|
+        puts "#{cell[1]+1}: #{cell[0][:name]} (#{cell[0][:email]})"
+      end
+      puts "---\n#{matched_list.size} #{matched_list.size == 1 ? 'record' : 'records'} total\n"
     else
       pp command
       puts 'Please enter new, list, show, or search'
     end
   end
-
-  def search_contacts(search)
-    contacts.select { |contact| ( (contact[:name].match(/#{search}/)) || (contact[:email].match(/#{search}/)) )}
-  end
 end
 
 #binding.pry
 contact_list = ContactList.new
+
 contact_list.menu
-contact_list.select_command
+
+
+
 
 
 
