@@ -39,7 +39,9 @@ class ContactList
       contacts.each_with_index { |contact,i| puts "#{i+1}: #{contact[:name]} (#{contact[:email]})" }
       puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
-      show_contacts(command[1].to_i)
+      puts
+      puts Contact.find(command[1].to_i)
+      puts
     when 'search'
       puts search_contacts(command[1])
     else
@@ -50,19 +52,6 @@ class ContactList
 
   def search_contacts(search)
     contacts.select { |contact| ( (contact[:name].match(/#{search}/)) || (contact[:email].match(/#{search}/)) )}
-  end
-
-  def show_contacts(id)
-    if id > contacts.size
-      puts "Contact not found." 
-      return
-    end
-    puts
-    puts contacts[id-1][:name], contacts[id-1][:email]
-    puts
-  end
-
-  def new_contact
   end
 end
 

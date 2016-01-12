@@ -35,6 +35,10 @@ class Contact
     # Returns the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
       # TODO: Find the Contact in the 'contacts.csv' file with the matching id.
+      if id > contacts.size
+        return "Contact not found." 
+      end
+      return @@contacts[id-1][:name], @@contacts[id-1][:email]
     end
 
     # Returns an array of contacts who match the given term.
