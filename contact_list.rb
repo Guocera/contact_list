@@ -45,8 +45,9 @@ class ContactList
       puts Contact.find(command[1].to_i)
       puts
     when 'search'
-      matched_list = Contact.search(command[1]).each do |cell|
-        puts "#{cell[1]+1}: #{cell[0][:name]} (#{cell[0][:email]})"
+      matched_list = Contact.search(command[1])
+      matched_list.each do |cell|
+        puts "#{cell[1]}: #{cell[0][:name]} (#{cell[0][:email]})"
       end
       puts "---\n#{matched_list.size} #{matched_list.size == 1 ? 'record' : 'records'} total\n"
     else

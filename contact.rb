@@ -46,12 +46,23 @@ class Contact
 
     # Returns an array of contacts who match the given term.
     def search(term)
-      # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
       matched_list = []
-      contacts.each_with_index do |contact,i|
-        matched_list << [contact, i] if ( (contact[:name].match(/#{term}/)) || (contact[:email].match(/#{term}/)) )
+      conn = PG::Connection.open(dbname: DATABASE_NAME)
+      conn.exec("SELECT * FROM contacts WHERE name LIKE  '%#{term}%' OR email LIKE '%#{term}%'") do |contacts|
+        contacts.each do |contact|
+          matched_list << [{name: contact['name'], email: contact['email']}, contact['id']]
+        end
       end
+      conn.close
       matched_list
+
+
+      # # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
+      # matched_list = []
+      # contacts.each_with_index do |contact,i|
+      #   matched_list << [contact, i] if ( (contact[:name].match(/#{term}/)) || (contact[:email].match(/#{term}/)) )
+      # end
+      # matched_list
     end
   end
 
