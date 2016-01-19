@@ -1,25 +1,35 @@
 require 'csv'
+require 'pg'
+require 'pry'
 
 # Represents a person in an address book.
 class Contact
-
+  @@contacts = Array.new
   @@csv_file = 'contacts.csv'
-  @@contact_info = CSV.read(@@csv_file)
+  # @@contact_info = CSV.read(@@csv_file)
 
   # Provides functionality for managing a list of Contacts in a database.
   class << self
 
     # Returns an Array of Contacts loaded from the database.
-    def contacts
-      @@contacts ||= contactify(@@contact_info)
+    def all
+      conn = PG.connect(
+        host: 'localhost',
+        dbname: 'contact_list',
+        user: 'development',
+        password: 'development'
+      )
+      if @@contacts == []
+        conn.exec('SELECT * FROM contacts;') do |contacts|
+          contacts.each do |contact|
+            @@contacts << {id: contact["id"].to_i, name: contact["name"], email: contact["email"]} 
+          end       
+        end
+      end
+      conn.close
       @@contacts
     end
-    ContactInfo = Struct.new(:name, :email)
-    def contactify(contact_info)
-      contact_info.collect do |row|
-        ContactInfo.new(row[0], row[1])
-      end
-    end
+
 
 
     # Creates a new contact, adding it to the database, returning the new contact.

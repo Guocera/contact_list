@@ -37,8 +37,8 @@ class ContactList
       puts
       Contact.create(full_name, email)
     when 'list'
-      contacts = Contact.contacts
-      contacts.each_with_index { |contact,i| puts "#{i+1}: #{contact[:name]} (#{contact[:email]})" }
+      contacts = Contact.all
+      contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
       puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
       puts
