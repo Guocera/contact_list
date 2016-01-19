@@ -30,14 +30,14 @@ class ContactList
     case command[0]
     when 'new'
       puts "\nFull name:"
-      full_name = gets.chomp
+      full_name = STDIN.gets.chomp
       puts
       puts "Email:"
-      email = gets.chomp
+      email = STDIN.gets.chomp
       puts
       Contact.create(full_name, email)
     when 'list'
-      contacts = Contact.all
+      contacts = Contact.contacts
       contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
       puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'

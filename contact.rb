@@ -6,19 +6,15 @@ require 'pry'
 class Contact
   @@contacts = Array.new
   @@csv_file = 'contacts.csv'
-  # @@contact_info = CSV.read(@@csv_file)
+
+  DATABASE_NAME = 'contact_list'
 
   # Provides functionality for managing a list of Contacts in a database.
   class << self
 
     # Returns an Array of Contacts loaded from the database.
-    def all
-      conn = PG.connect(
-        host: 'localhost',
-        dbname: 'contact_list',
-        user: 'development',
-        password: 'development'
-      )
+    def contacts
+      conn = PG::Connection.open(dbname: DATABASE_NAME)
       if @@contacts == []
         conn.exec('SELECT * FROM contacts;') do |contacts|
           contacts.each do |contact|
@@ -32,14 +28,11 @@ class Contact
 
 
 
+
     # Creates a new contact, adding it to the database, returning the new contact.
     def create(full_name, email)
-      # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
-      contacts << ContactInfo.new(full_name, email)
-      CSV.open(@@csv_file, 'w') do |csv| 
-        contacts.each { |contact| csv << [contact[:name], contact[:email]] }
-      end
-      puts "Successfully added contact."
+      contact = Contact.new(name: full_name, email: email)
+      contact.save
     end
 
     # Returns the contact with the specified id. If no contact has the id, returns nil.
@@ -60,7 +53,21 @@ class Contact
       end
       matched_list
     end
+  end
 
+  attr_reader :name, :email
+
+  def initialize(args = {})
+    @name = args[:name]
+    @email = args[:email]
+  end
+
+  def save
+    conn = PG::Connection.open(dbname: DATABASE_NAME)
+    conn.exec_params("INSERT INTO contacts(name, email) VALUES($1, $2);", [name, email])
+
+    conn.close
+    puts "Successfully added contact."
   end
 
 end
