@@ -1,4 +1,4 @@
-#!/usr/local/rvm/rubies/ruby-2.1.3/bin/ruby
+#!/Users/YEE/.rvm/rubies/ruby-2.3.0/bin/ruby
 require_relative 'contact'
 
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.

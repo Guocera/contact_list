@@ -78,7 +78,7 @@ class Contact
 
   def destroy
     conn = PG::Connection.open(dbname: DATABASE_NAME)
-    conn.exec_params("DELETE FROM contacts WHERE id = $1;", [id])
+    conn.exec_params("DELETE FROM contacts WHERE id = $1::int;", [id])
     conn.close
   end
 
