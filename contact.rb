@@ -38,7 +38,8 @@ class Contact
         conn = PG::Connection.open(dbname: DATABASE_NAME)
         contact = conn.exec_params("SELECT * FROM contacts WHERE id = $1::int;", [id])
         conn.close
-        return contact[0]['name'], contact[0]['email']
+        Contact.new(name: contact[0]['name'], email: contact[0]['email'])
+#        return contact[0]['name'], contact[0]['email']
       else
         "Contact not found." 
       end
@@ -55,18 +56,10 @@ class Contact
       end
       conn.close
       matched_list
-
-
-      # # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
-      # matched_list = []
-      # contacts.each_with_index do |contact,i|
-      #   matched_list << [contact, i] if ( (contact[:name].match(/#{term}/)) || (contact[:email].match(/#{term}/)) )
-      # end
-      # matched_list
     end
   end
 
-  attr_reader :name, :email
+  attr_accessor :name, :email, :id
 
   def initialize(args = {})
     @name = args[:name]
@@ -75,9 +68,18 @@ class Contact
 
   def save
     conn = PG::Connection.open(dbname: DATABASE_NAME)
-    conn.exec_params("INSERT INTO contacts(name, email) VALUES($1, $2);", [name, email])
+    if id
+      conn.exec_params("UPDATE contacts SET name = $1, email = $2 WHERE id = $3::int;", [name, email, id])
+    else
+      conn.exec_params("INSERT INTO contacts(name, email) VALUES($1, $2);", [name, email])
+    end
     conn.close
-    puts "Successfully added contact."
+  end
+
+  def destroy
+    conn = PG::Connection.open(dbname: DATABASE_NAME)
+    conn.exec_params("DELETE FROM contacts WHERE id = $1;", [id])
+    conn.close
   end
 
 end
