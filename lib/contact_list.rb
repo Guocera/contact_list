@@ -1,9 +1,3 @@
-#!/Users/YEE/.rvm/rubies/ruby-2.3.0/bin/ruby
-require 'pg'
-require 'pry'
-require 'active_record'
-require_relative 'contact'
-
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
 class ContactList
   attr_reader :contacts
@@ -87,14 +81,4 @@ class ContactList
   def exist? contact
     contact.is_a? Contact
   end
-
 end
-
-
-ActiveRecord::Base.establish_connection(
-  adapter: :postgresql,
-  database: 'contact_list'
-  )
-contact_list = ContactList.new
-
-contact_list.menu
