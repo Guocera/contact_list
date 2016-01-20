@@ -11,7 +11,7 @@ class ContactList
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
   def menu
     if ARGV == []
-      puts "Here is a list of available commands:", \
+      puts 'Here is a list of available commands:', \
               "\tnew\t- Create a new contact", \
               "\tupdate ##\t- Update an existing contact", \
               "\tdelete ##\t- Delete an existing contact", \
@@ -29,38 +29,37 @@ class ContactList
     case command[0]
     when 'delete'
       id = command[1].to_i
-      contact = Contact.find(id)
-      if contact == 'Contact not found.'
-        puts contact
-      else
-        contact.id = id
+      contact = Contact.find_by(id: id)
+      if exist? contact
         contact.destroy
-        puts "Successfully deleted contact."
+        puts 'Successfully deleted contact.'
+      else
+        puts 'No contact found.'
       end
     when 'update'
       id = command[1].to_i
       contact = Contact.find_by(id: id)
       if exist? contact
-        puts "\nFull name:"
+        puts '\nFull name:'
         full_name = STDIN.gets.chomp
         puts
-        puts "Email:"
+        puts 'Email:'
         email = STDIN.gets.chomp
         puts
         contact.update(name: full_name, email: email)
-        puts "Successfully updated contact."
+        puts 'Successfully updated contact.'
       else
-        puts "No contact found."
+        puts 'No contact found.'
       end
     when 'new'
       puts "\nFull name:"
       full_name = STDIN.gets.chomp
       puts
-      puts "Email:"
+      puts 'Email:'
       email = STDIN.gets.chomp
       puts
       Contact.create(name: full_name, email: email)
-      puts "Successfully added contact."
+      puts 'Successfully added contact.'
     when 'list'
       contacts = Contact.all.order(:id)
       contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
@@ -71,7 +70,7 @@ class ContactList
       if exist? contact
         puts contact.name, contact.email
       else
-        puts "No contact found."
+        puts 'No contact found.'
       end
       puts
     when 'search'
@@ -81,7 +80,6 @@ class ContactList
       end
       puts "---\n#{matched_list.size} #{matched_list.size == 1 ? 'record' : 'records'} total\n"
     else
-      pp command
       puts 'Please enter new, update, delete, list, show, or search'
     end
   end
