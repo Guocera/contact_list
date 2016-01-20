@@ -1,4 +1,7 @@
 #!/Users/YEE/.rvm/rubies/ruby-2.3.0/bin/ruby
+require 'pg'
+require 'pry'
+require 'active_record'
 require_relative 'contact'
 
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
@@ -6,10 +9,6 @@ class ContactList
   attr_reader :contacts
 
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
-  def initialize
-
-  end
-
   def menu
     if ARGV == []
       puts "Here is a list of available commands:", \
@@ -66,9 +65,13 @@ class ContactList
       Contact.create(full_name, email)
       puts "Successfully added contact."
     when 'list'
-      contacts = Contact.contacts.sort_by { |contact| contact[:id]}
+      contacts = Contact.all.order(:id)
       contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
       puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
+
+      # contacts = Contact.contacts.sort_by { |contact| contact[:id]}
+      # contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
+      # puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
       puts
       contact = Contact.find(command[1].to_i)
@@ -91,7 +94,11 @@ class ContactList
   end
 end
 
-#binding.pry
+
+ActiveRecord::Base.establish_connection(
+  adapter: :postgresql,
+  database: 'contact_list'
+  )
 contact_list = ContactList.new
 
 contact_list.menu
