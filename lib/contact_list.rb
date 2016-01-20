@@ -3,21 +3,19 @@ require_relative 'contact'
 
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
 class ContactList
-  attr_reader :contacts, :csv_file
+  attr_reader :contacts
 
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
   def initialize
 
   end
 
-
-
   def menu
     if ARGV == []
       puts "Here is a list of available commands:", \
               "\tnew\t- Create a new contact", \
-              "\tupdate\t- Update an existing contact", \
-              "\tdelete\t- Delete an existing contact", \
+              "\tupdate ##\t- Update an existing contact", \
+              "\tdelete ##\t- Delete an existing contact", \
               "\tlist\t- List all contacts", \
               "\tshow ##\t- Show contact ##", \
               "\tsearch\t- Search contacts"
@@ -97,10 +95,3 @@ end
 contact_list = ContactList.new
 
 contact_list.menu
-
-
-
-
-
-
-

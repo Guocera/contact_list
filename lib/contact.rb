@@ -1,12 +1,9 @@
-require 'csv'
 require 'pg'
 require 'pry'
 
 # Represents a person in an address book.
 class Contact
   @@contacts = Array.new
-  @@csv_file = 'contacts.csv'
-
   DATABASE_NAME = 'contact_list'
 
   # Provides functionality for managing a list of Contacts in a database.
@@ -34,15 +31,12 @@ class Contact
 
     # Returns the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
-      if id <= contacts.size
-        conn = PG::Connection.open(dbname: DATABASE_NAME)
-        contact = conn.exec_params("SELECT * FROM contacts WHERE id = $1::int;", [id])
-        conn.close
-        Contact.new(name: contact[0]['name'], email: contact[0]['email'])
-#        return contact[0]['name'], contact[0]['email']
-      else
+      conn = PG::Connection.open(dbname: DATABASE_NAME)
+      contact = conn.exec_params("SELECT * FROM contacts WHERE id = $1::int;", [id])
+      conn.close
+      Contact.new(name: contact[0]['name'], email: contact[0]['email'])
+    rescue IndexError
         "Contact not found." 
-      end
     end
 
     # Returns an array of contacts who match the given term.
