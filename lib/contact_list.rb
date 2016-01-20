@@ -74,9 +74,9 @@ class ContactList
       end
       puts
     when 'search'
-      matched_list = Contact.search(command[1])
+      matched_list = Contact.where('name LIKE :term OR email LIKE :term', {term: "%#{command[1]}%"})
       matched_list.each do |cell|
-        puts "#{cell[1]}: #{cell[0][:name]} (#{cell[0][:email]})"
+        puts "#{cell[:id]}: #{cell[:name]} (#{cell[:email]})"
       end
       puts "---\n#{matched_list.size} #{matched_list.size == 1 ? 'record' : 'records'} total\n"
     else
