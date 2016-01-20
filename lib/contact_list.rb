@@ -74,13 +74,22 @@ class ContactList
       # puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
       puts
-      contact = Contact.find(command[1].to_i)
+      contact = Contact.find_by(id: command[1].to_i)
       if contact.is_a? Contact
         puts contact.name, contact.email
       else
-        puts contact
+        puts "No contact found."
       end
       puts
+
+      # puts
+      # contact = Contact.find(command[1].to_i)
+      # if contact.is_a? Contact
+      #   puts contact.name, contact.email
+      # else
+      #   puts contact
+      # end
+      # puts
     when 'search'
       matched_list = Contact.search(command[1])
       matched_list.each do |cell|
