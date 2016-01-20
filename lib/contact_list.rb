@@ -9,7 +9,7 @@ class ContactList
   def initialize
 
   end
-
+# test
   def menu
     if ARGV == []
       puts "Here is a list of available commands:", \
