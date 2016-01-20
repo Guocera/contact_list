@@ -62,16 +62,12 @@ class ContactList
       puts "Email:"
       email = STDIN.gets.chomp
       puts
-      Contact.create(full_name, email)
+      Contact.create(name: full_name, email: email)
       puts "Successfully added contact."
     when 'list'
       contacts = Contact.all.order(:id)
       contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
       puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
-
-      # contacts = Contact.contacts.sort_by { |contact| contact[:id]}
-      # contacts.each { |contact| puts "#{contact[:id]}: #{contact[:name]} (#{contact[:email]})" }
-      # puts "---\n#{contacts.size} #{contacts.size == 1 ? 'record' : 'records'} total\n"
     when 'show'
       puts
       contact = Contact.find_by(id: command[1].to_i)
@@ -81,15 +77,6 @@ class ContactList
         puts "No contact found."
       end
       puts
-
-      # puts
-      # contact = Contact.find(command[1].to_i)
-      # if contact.is_a? Contact
-      #   puts contact.name, contact.email
-      # else
-      #   puts contact
-      # end
-      # puts
     when 'search'
       matched_list = Contact.search(command[1])
       matched_list.each do |cell|
