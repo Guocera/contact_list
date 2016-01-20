@@ -39,21 +39,18 @@ class ContactList
       end
     when 'update'
       id = command[1].to_i
-      contact = Contact.find(id)
-      if contact == 'Contact not found.'
-        puts contact
-      else
+      contact = Contact.find_by(id: id)
+      if exist? contact
         puts "\nFull name:"
         full_name = STDIN.gets.chomp
         puts
         puts "Email:"
         email = STDIN.gets.chomp
         puts
-        contact.id = id
-        contact.name = full_name
-        contact.email = email
-        contact.save
+        contact.update(name: full_name, email: email)
         puts "Successfully updated contact."
+      else
+        puts "No contact found."
       end
     when 'new'
       puts "\nFull name:"
@@ -71,7 +68,7 @@ class ContactList
     when 'show'
       puts
       contact = Contact.find_by(id: command[1].to_i)
-      if contact.is_a? Contact
+      if exist? contact
         puts contact.name, contact.email
       else
         puts "No contact found."
@@ -88,6 +85,11 @@ class ContactList
       puts 'Please enter new, update, delete, list, show, or search'
     end
   end
+
+  def exist? contact
+    contact.is_a? Contact
+  end
+
 end
 
 
